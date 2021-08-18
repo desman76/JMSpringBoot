@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User's information</title>
+</head>
+<body>
+
+<span>Имя: </span><span th:text="${user.username}"></span><br>
+<span>Роли: </span>
+<th:block th:each="role : ${user.roles}">
+    <span th:text="${role.role} + '; '"></span>
+</th:block>
+<br><br>
+<a th:href="@{/logout}"><button type="button">Logout</button></a>
+</body>
+</html>

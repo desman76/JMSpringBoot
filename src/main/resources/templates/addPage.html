@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление пользователя</title>
+</head>
+<body>
+<form th:action="@{/admin}" th:method="post" th:object="${user}">
+    <label for="name">Имя: </label>
+    <input type="text" th:field="*{username}" id="name"/><br><br>
+    <label for="password">Пароль: </label>
+    <input type="text" th:field="*{password}" id="password"/><br><br>
+    <label for="enabled">Активность: </label>
+    <input type="checkbox" th:field="*{enabled}" id="enabled"/><br><br>
+    <input type="checkbox" name="admin" value="1" th:text="administrator"/><br><br>
+    <input type="submit" value="Добавить"/>
+</form>
+<br><br>
+<a th:href="@{/logout}"><button type="button">Logout</button></a>
+</body>
+</html>

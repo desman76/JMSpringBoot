@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit information</title>
+</head>
+<body>
+<form th:action="@{/admin}" th:method="PATCH" th:object="${user}">
+    <input type="hidden" th:field="*{id}"/>
+    <label for="name2">Имя: </label>
+    <input id="name2" type="text" th:field="*{username}"/><br><br>
+    <input id="pass" type="hidden" th:field="*{password}"/>
+    <label for="enabled">Активность: </label>
+    <input type="checkbox" th:field="*{enabled}" id="enabled"/><br><br>
+    <label for="roles">Роли: </label>
+    <div id="roles">
+        <input type="checkbox" th:checked="${isAdmin}" name="admin" value="1" th:text="administrator"/><br>
+    </div>
+    <br><br>
+    <input type="submit" th:value="Изменить"/><br><br>
+</form>
+<br><br>
+<a th:href="@{/logout}">
+    <button type="button">Logout</button>
+</a>
+</body>
+</html>
