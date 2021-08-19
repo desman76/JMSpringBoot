@@ -18,6 +18,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,
                                         Authentication authentication) throws IOException, ServletException {
+        System.out.println("authentication: " + authentication.getAuthorities());
+        System.out.println("principal: " + authentication.getPrincipal());
+        System.out.println("details: " + authentication.getDetails());
+        System.out.println("authentication name: " + authentication.getName());
+        System.out.println("credentials: " + authentication.getCredentials());
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
         if (roles.contains("ROLE_ADMIN")) {
             httpServletResponse.sendRedirect("/admin");

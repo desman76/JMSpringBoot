@@ -6,8 +6,11 @@ import com.mpv.jm_spring_boot.service.BasicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -35,8 +38,10 @@ public class AdminController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute("user") User user,
+    public String create(@ModelAttribute("user") @Valid User user,
+                         BindingResult bd,
                          @RequestParam(value = "admin", required = false) String admin) {
+        if (bd.hasErrors()) return "addPage";
         if (admin != null) {
             user.addRole(roleService.getByName("ROLE_ADMIN"));
         }
@@ -55,9 +60,14 @@ public class AdminController {
     }
 
     @PatchMapping
-    public String edit(@ModelAttribute("user") User user,
+    public String edit(@ModelAttribute("user") @Valid User user,
+                       BindingResult bd,
                        @RequestParam(value = "admin", required = false) String admin) {
-        System.out.println("UFDM: " + user);
+        System.out.println("USER DATA: " + user);
+        if (bd.hasErrors()) {
+            bd.getAllErrors().forEach(System.out::println);
+            return "editPage";
+        }
         if (admin != null) {
             user.addRole(roleService.getByName("ROLE_ADMIN"));
         }

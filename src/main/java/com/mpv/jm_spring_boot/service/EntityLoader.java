@@ -17,13 +17,13 @@ public class EntityLoader {
         Role userRole = new Role("ROLE_USER");
         Role adminRole = new Role("ROLE_ADMIN");
 
-        User user1 = new User("user_1", "1");
+        User user1 = new User("user_1", "1", "Bob", 20);
         user1.addRole(userRole);
 
-        User user2 = new User("user_2", "2");
+        User user2 = new User("user_2", "2", "Bill", 25);
         user2.addRole(adminRole);
 
-        User user3 = new User("user_3", "3");
+        User user3 = new User("user_3", "3", "Ted", 35);
         user3.getRoles().add(userRole);
         user3.getRoles().add(adminRole);
 
