@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Users</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="text-white">
+        <span class="font-weight-bolder" th:text="${#authentication.getPrincipal().username}"></span>
+        <span th:text="'with roles: '"></span>
+        <span th:each="role : ${#authentication.getPrincipal().roles}">
+            <span th:text="${role.authority.replace('ROLE_', '')}"></span>
+        </span>
+    </div>
+    <div>
+        <a style="color: #9ba0a9" th:href="@{/logout}" th:text="Logout"></a>
+    </div>
+</nav>
+<br>
+<div class="container">
+    <div class="row">
+
+        <!--    ------------------------  SIDEBAR   -------------------------             -->
+
+        <div class="col-2">
+            <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="pills-profile" data-toggle="pill" href="#user-pills" role="tab"
+                   aria-controls="v-pills-profile" aria-selected="true">User</a>
+            </div>
+        </div>
+
+        <!--    ------------------------  MAIN BODY   -------------------------             -->
+
+        <div class="col-10">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="user-pills" role="tabpanel" aria-labelledby="pills-profile">
+                    <h1>
+                        User information-page
+                    </h1>
+                    <div class="card">
+                        <h4 class="card-header">
+                            About user
+                        </h4>
+                        <div class="card-body">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Age</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td th:text="${#authentication.getPrincipal().id}">ID</td>
+                                    <td th:text="${#authentication.getPrincipal().firstName}">First Name</td>
+                                    <td th:text="${#authentication.getPrincipal().lastName}">Last Name</td>
+                                    <td th:text="${#authentication.getPrincipal().age}">Age</td>
+                                    <td th:text="${#authentication.getPrincipal().email}">Email</td>
+                                    <td>
+                                        <div th:each="role : ${#authentication.getPrincipal().roles}">
+                                            <div th:text="${role.role.replace('ROLE_', '')}"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

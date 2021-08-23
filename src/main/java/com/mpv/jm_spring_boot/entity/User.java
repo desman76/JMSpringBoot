@@ -2,12 +2,10 @@ package com.mpv.jm_spring_boot.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,25 +20,18 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "Поле не должно быть  пустым")
-    @Email(message = "email должен быть валидным")
     @Column(name = "email")
     private String email;
 
-    @Size(min = 1, message = "длина пароля должна быть не менее 1 символа")
     @Column(name = "password")
     private String password;
 
-    @NotBlank(message = "Поле не должно быть  пустым")
     @Column(name = "f_name")
     private String firstName;
 
-    @NotBlank(message = "Поле не должно быть  пустым")
     @Column(name = "l_name")
     private String lastName;
 
-    @NotNull(message = "Поле не должно быть  пустым")
-    @Min(value = 10, message = "минимальный возраст 10 лет")
     @Column(name = "age")
     private Integer age;
 
@@ -64,10 +55,6 @@ public class User implements UserDetails {
 
     public void addRole(Role role) {
         roles.add(role);
-    }
-
-    public void removeRole(Role role) {
-        roles.remove(role);
     }
 
     @Override
