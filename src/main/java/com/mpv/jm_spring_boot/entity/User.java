@@ -23,8 +23,9 @@ public class User implements UserDetails {
     private long id;
 
     @NotBlank(message = "Поле не должно быть  пустым")
-    @Column(name = "username")
-    private String username;
+    @Email(message = "email должен быть валидным")
+    @Column(name = "email")
+    private String email;
 
     @Size(min = 1, message = "длина пароля должна быть не менее 1 символа")
     @Column(name = "password")
@@ -34,13 +35,14 @@ public class User implements UserDetails {
     @Column(name = "f_name")
     private String firstName;
 
+    @NotBlank(message = "Поле не должно быть  пустым")
+    @Column(name = "l_name")
+    private String lastName;
+
     @NotNull(message = "Поле не должно быть  пустым")
     @Min(value = 10, message = "минимальный возраст 10 лет")
     @Column(name = "age")
     private Integer age;
-
-    @Column(name = "is_enabled")
-    private boolean isEnabled;
 
     @ManyToMany()
     @JoinTable(name = "users_roles",
@@ -49,15 +51,15 @@ public class User implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
     public User() {
-        isEnabled = true;
     }
 
-    public User(String username, String password,String firstName, int age) {
+    public User(String email, String password,String firstName, String lastName, int age) {
         this();
-        this.username = username;
         this.password = password;
         this.firstName = firstName;
+        this.lastName = lastName;
         this.age = age;
+        this.email = email;
     }
 
     public void addRole(Role role) {
@@ -66,6 +68,11 @@ public class User implements UserDetails {
 
     public void removeRole(Role role) {
         roles.remove(role);
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override
@@ -90,18 +97,18 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return true;
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", age=" + age +
-                ", isEnabled=" + isEnabled +
                 ", roles=" + roles +
                 '}';
     }

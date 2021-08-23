@@ -1,34 +1,31 @@
 package com.mpv.jm_spring_boot.controller;
 
-import com.mpv.jm_spring_boot.entity.Role;
 import com.mpv.jm_spring_boot.entity.User;
-import com.mpv.jm_spring_boot.service.BasicService;
+import com.mpv.jm_spring_boot.service.RoleService;
+import com.mpv.jm_spring_boot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
-    private BasicService<User> userService;
+    private UserService userService;
 
     @Autowired
-    private BasicService<Role> roleService;
+    private RoleService roleService;
 
     @GetMapping
     public String getUsers(Model model) {
-        List<User> all = userService.getAll();
-        System.out.println(all);
-        model.addAttribute("users", all);
-        return "allUsers";
+        model.addAttribute("users", userService.getAll());
+        model.addAttribute("newUser", new User());
+        return "Users";
     }
 
     @GetMapping("/add")
@@ -40,12 +37,18 @@ public class AdminController {
     @PostMapping
     public String create(@ModelAttribute("user") @Valid User user,
                          BindingResult bd,
-                         @RequestParam(value = "admin", required = false) String admin) {
-        if (bd.hasErrors()) return "addPage";
-        if (admin != null) {
+                         @RequestParam(value = "listRoles", required = false) String roles) {
+//        if (bd.hasErrors()) return "redirect:/admin";
+//        if (admin != null) {
+//            user.addRole(roleService.getByName("ROLE_ADMIN"));
+//        }
+//        user.addRole(roleService.getByName("ROLE_USER"));
+        if (roles.contains("admin")) {
             user.addRole(roleService.getByName("ROLE_ADMIN"));
         }
-        user.addRole(roleService.getByName("ROLE_USER"));
+        if (roles.contains("user")) {
+            user.addRole(roleService.getByName("ROLE_USER"));
+        }
         userService.add(user);
         return "redirect:/admin";
     }
@@ -61,23 +64,25 @@ public class AdminController {
 
     @PatchMapping
     public String edit(@ModelAttribute("user") @Valid User user,
-                       BindingResult bd,
-                       @RequestParam(value = "admin", required = false) String admin) {
-        System.out.println("USER DATA: " + user);
-        if (bd.hasErrors()) {
-            bd.getAllErrors().forEach(System.out::println);
-            return "editPage";
-        }
-        if (admin != null) {
+//                       BindingResult bd,
+                       @RequestParam(value = "listRoles", required = false) String roles) {
+//        System.out.println("USER DATA: " + user);
+//        if (bd.hasErrors()) {
+//            model.addAttribute("users", userService.getAll());
+//            return "redirect:/admin";
+//        }
+        if (roles.contains("admin")) {
             user.addRole(roleService.getByName("ROLE_ADMIN"));
         }
-        user.addRole(roleService.getByName("ROLE_USER"));
+        if (roles.contains("user")) {
+            user.addRole(roleService.getByName("ROLE_USER"));
+        }
         userService.update(user);
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") long id) {
+    @DeleteMapping
+    public String delete(@RequestParam("id") long id) {
         userService.deleteById(id);
         return "redirect:/admin";
     }

@@ -1,6 +1,7 @@
 package com.mpv.jm_spring_boot.security;
 
 import com.mpv.jm_spring_boot.handler.LoginSuccessHandler;
+import com.mpv.jm_spring_boot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +20,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    @Qualifier("userDetailServiceImpl")
-    private UserDetailsService userDetailsService;
+    private UserService userService;
 
     @Autowired
     private LoginSuccessHandler loginSuccessHandler;
@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setUserDetailsService(userService);
         return authenticationProvider;
     }
 

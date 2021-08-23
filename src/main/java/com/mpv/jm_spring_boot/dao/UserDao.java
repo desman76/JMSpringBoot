@@ -42,8 +42,8 @@ public class UserDao implements BasicDao<User> {
     }
 
     @Override
-    public User getByName(String name) {
-        return (User) entityManager.createQuery("FROM User as u left join fetch u.roles WHERE u.username=:name ")
-                .setParameter("name", name).getSingleResult();
+    public User getByName(String email) {
+        return (User) entityManager.createQuery("FROM User as u left join fetch u.roles WHERE u.email=:email ")
+                .setParameter("email", email).getSingleResult();
     }
 }

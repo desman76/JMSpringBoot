@@ -17,7 +17,7 @@ import java.security.Principal;
 public class UserController {
 
     @Autowired
-    @Qualifier("userDetailServiceImpl")
+    @Qualifier("userServiceImpl")
     private UserDetailsService userDetailsService;
 
     @GetMapping

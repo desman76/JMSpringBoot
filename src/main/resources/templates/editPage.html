@@ -7,23 +7,26 @@
 <body>
 <form th:action="@{/admin}" th:method="PATCH" th:object="${user}">
     <label for="id">Id: </label>
-    <input id="id" type="text" th:field="*{id}" readonly/><br><br>
+    <input id="id" type="text" th:field="*{id}" disabled/><br><br>
+    <input type="hidden" th:field="*{id}"/>
 
-    <label for="login">Логин: </label>
-    <input id="login" type="text" th:field="*{username}" readonly/><br><br>
+    <label for="login">Email: </label>
+    <input id="login" type="text" th:field="*{email}" disabled/><br><br>
+    <input type="hidden" th:field="*{email}"/>
 
     <input id="pass" type="hidden" th:field="*{password}"/>
 
-    <label for="name">Имя: </label>
-    <input id="name" type="text" th:field="*{firstName}"/>
+    <label for="fname">Имя: </label>
+    <input id="fname" type="text" th:field="*{firstName}"/>
     <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span><br><br>
+
+    <label for="lname">Фамилия: </label>
+    <input id="lname" type="text" th:field="*{lastName}"/>
+    <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span><br><br>
 
     <label for="age">Возраст: </label>
     <input id="age" type="text" th:field="*{age}"/>
     <span th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></span><br><br>
-
-    <label for="enabled">Активность: </label>
-    <input type="checkbox" th:field="*{enabled}" id="enabled"/><br><br>
 
     <label for="roles">Роли: </label>
     <div id="roles">
