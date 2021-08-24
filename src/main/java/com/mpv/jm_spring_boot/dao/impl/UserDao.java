@@ -1,5 +1,6 @@
-package com.mpv.jm_spring_boot.dao;
+package com.mpv.jm_spring_boot.dao.impl;
 
+import com.mpv.jm_spring_boot.dao.BasicDao;
 import com.mpv.jm_spring_boot.entity.User;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;

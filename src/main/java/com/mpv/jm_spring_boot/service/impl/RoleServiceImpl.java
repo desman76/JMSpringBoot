@@ -1,7 +1,8 @@
-package com.mpv.jm_spring_boot.service;
+package com.mpv.jm_spring_boot.service.impl;
 
 import com.mpv.jm_spring_boot.dao.BasicDao;
 import com.mpv.jm_spring_boot.entity.Role;
+import com.mpv.jm_spring_boot.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,9 +10,8 @@ import java.util.List;
 
 @Service
 @Transactional
-public class RoleServiceImpl implements RoleService{
+public class RoleServiceImpl implements RoleService {
 
-    @Autowired
     private BasicDao<Role> roleDao;
 
     @Override
@@ -42,5 +42,10 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public Role getByName(String name) {
         return roleDao.getByName(name);
+    }
+
+    @Autowired
+    public void setRoleDao(BasicDao<Role> roleDao) {
+        this.roleDao = roleDao;
     }
 }

@@ -1,5 +1,6 @@
-package com.mpv.jm_spring_boot.dao;
+package com.mpv.jm_spring_boot.dao.impl;
 
+import com.mpv.jm_spring_boot.dao.BasicDao;
 import com.mpv.jm_spring_boot.entity.Role;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
@@ -7,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
-public class RoleDao implements BasicDao<Role>{
+public class RoleDao implements BasicDao<Role> {
 
     @PersistenceContext
     private EntityManager entityManager;

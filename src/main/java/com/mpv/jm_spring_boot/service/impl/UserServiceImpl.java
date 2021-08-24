@@ -1,10 +1,10 @@
-package com.mpv.jm_spring_boot.service;
+package com.mpv.jm_spring_boot.service.impl;
 
 import com.mpv.jm_spring_boot.dao.BasicDao;
 import com.mpv.jm_spring_boot.entity.User;
+import com.mpv.jm_spring_boot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,10 +15,7 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private BasicDao<User> userDao;
 
     @Override
@@ -57,5 +54,15 @@ public class UserServiceImpl implements UserService {
         User user = userDao.getByName(username);
         if (user == null) throw new UsernameNotFoundException(String.format("Пользователь %s не найден", username));
         return user;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Autowired
+    public void setUserDao(BasicDao<User> userDao) {
+        this.userDao = userDao;
     }
 }
