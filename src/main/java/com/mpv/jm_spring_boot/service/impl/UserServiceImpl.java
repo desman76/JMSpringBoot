@@ -1,6 +1,7 @@
 package com.mpv.jm_spring_boot.service.impl;
 
 import com.mpv.jm_spring_boot.dao.BasicDao;
+import com.mpv.jm_spring_boot.entity.Role;
 import com.mpv.jm_spring_boot.entity.User;
 import com.mpv.jm_spring_boot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void add(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        for (Role role : user.getRoles()) {
+            if (role.getRole().equals("ADMIN")) {
+                role.setId(2L);
+            } else if(role.getRole().equals("USER")) {
+                role.setId(1L);
+            }
+        }
         userDao.add(user);
     }
 
