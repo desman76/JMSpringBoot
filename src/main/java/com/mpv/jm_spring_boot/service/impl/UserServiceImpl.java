@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -22,18 +23,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void add(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        for (Role role : user.getRoles()) {
-            if (role.getRole().equals("ADMIN")) {
-                role.setId(2L);
-            } else if(role.getRole().equals("USER")) {
-                role.setId(1L);
-            }
-        }
+        manageRoles(user.getRoles());
+        System.out.println("USER ADD: " + user);
         userDao.add(user);
     }
 
     @Override
     public void update(User user) {
+        manageRoles(user.getRoles());
+        System.out.println("USER UPDATE: " + user);
         userDao.update(user);
     }
 
@@ -72,5 +70,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public void setUserDao(BasicDao<User> userDao) {
         this.userDao = userDao;
+    }
+
+    private void manageRoles(Set<Role> roles) {
+        for (Role role : roles) {
+            if (role.getRole().equals("ADMIN")) {
+                role.setId(2L);
+            } else if(role.getRole().equals("USER")) {
+                role.setId(1L);
+            }
+        }
     }
 }

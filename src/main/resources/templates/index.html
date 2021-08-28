@@ -265,10 +265,7 @@
 
 <!--  --------------------------------- EDIT MODAL ------------------------------------- -->
 
-<div class="modal fade" id="editModal"
-     tabindex="-1"
-     aria-labelledby="ModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
     <form id="editForm">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -354,9 +351,10 @@
                                 <label for="passwordEdit"
                                        class="col-form-label"><b>Password:</b></label>
                             </div>
-                            <input type="text"
+                            <input type="password"
                                    class="form-control"
-                                   id="passwordEdit">
+                                   id="passwordEdit"
+                                   disabled>
                             <input type="hidden"
                                    class="form-control"
                                    name="password">
@@ -371,11 +369,10 @@
                                     id="rolesEdit"
                                     name="listRoles"
                                     size="2">
-                                <option selected
-                                        value="user">
+                                <option selected>
                                     USER
                                 </option>
-                                <option value="admin">
+                                <option>
                                     ADMIN
                                 </option>
                             </select>
@@ -389,7 +386,7 @@
                             data-dismiss="modal">Close
                     </button>
                     <button type="submit"
-                            class="btn btn-primary">Edit
+                            class="btn btn-primary" onclick="editUser()">Edit
                     </button>
                 </div>
 
@@ -539,7 +536,7 @@
             .then(result => {
                 if (result.length > 0) {
                     let body = "";
-                    result.forEach((user) => {
+                    result.forEach(user => {
                         body += "<tr>"
                         body += "<td>" + user.id + "</td>"
                         body += "<td>" + user.firstName + "</td>"
@@ -551,8 +548,12 @@
                             body += `<div>${role.role.replace('ROLE_', '')}</div>`
                         })
                         body += "</td>"
-                        body += "<td>" + `<a href="/admin/users/${user.id}" class="btn btn-primary" id="edit">Edit</a>` + "</td>"
-                        body += "<td>" + `<a href="/admin/users/${user.id}" class="btn btn-danger" id="delete">Delete</a>` + "</td>"
+                        body += "<td>" +
+                            `<button type="button" class="btn btn-info" data-toggle="modal" data-target="#editModal" onclick='fillEditModal(${user.id})'>
+                             Edit </button>` + "</td>"
+                        body += "<td>" +
+                            `<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+                             Delete </button>` + "</td>"
                         body += "</tr>"
                     })
                     document.querySelector("#usersTable").innerHTML = body;
@@ -573,7 +574,7 @@
         let roles = []
 
         for (let i = 0; i < selectedRoles.options.length; i++) {
-            if (selectedRoles.options[i].selected){
+            if (selectedRoles.options[i].selected) {
                 console.log(selectedRoles.options[i].value)
                 roles.push(selectedRoles.options[i].value)
             }
@@ -582,22 +583,75 @@
         let response = await fetch('/api', {
             method: 'POST',
             headers: {
-                "Accept" : "application/json",
+                "Accept": "application/json",
                 "Content-Type": "application/json; charset=UTF-8",
             },
             body: JSON.stringify({
-                "firstName" : fName,
-                "lastName" : lName,
-                "age" : age,
-                "email" : email,
-                "password" : pass,
-                "roles" : roles
+                "firstName": fName,
+                "lastName": lName,
+                "age": age,
+                "email": email,
+                "password": pass,
+                "roles": roles
             })
         });
 
         getUsers()
         $('#home-tab').trigger('click')
     };
+
+    function fillEditModal(id) {
+        fetch('/api/' + id, {
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json; charset=UTF-8",
+            }
+        })
+        .then(response => response.json())
+            .then(result => {
+                $('#idEdit').val(result.id)
+                $('#firstNameEdit').val(result.firstName)
+                $('#lastNameEdit').val(result.lastName)
+                $('#ageEdit').val(result.age)
+                $('#emailEdit').val(result.email)
+                $('#passwordEdit').val(result.password)
+            })
+    }
+
+    function editUser() {
+        let id = document.querySelector('#idEdit').value
+        let fName = document.querySelector('#firstNameEdit').value
+        let lName = document.querySelector('#lastNameEdit').value
+        let age = document.querySelector('#ageEdit').value
+        let email = document.querySelector('#emailEdit').value
+        let pass = document.querySelector('#passwordEdit').value
+        let selectedRoles = document.querySelector('#rolesEdit')
+        let roles = []
+
+        for (let i = 0; i < selectedRoles.options.length; i++) {
+            if (selectedRoles.options[i].selected) {
+                console.log(selectedRoles.options[i].value)
+                roles.push(selectedRoles.options[i].value)
+            }
+        }
+        fetch('/api', {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8"
+            },
+            body: JSON.stringify({
+                "id": id,
+                "firstName": fName,
+                "lastName": lName,
+                "age": age,
+                "email": email,
+                "password": pass,
+                "roles": roles
+            })
+        });
+        getUsers()
+        $('#editModal').close
+    }
 </script>
 </body>
 </html>
