@@ -13,7 +13,6 @@ import java.util.List;
 public class AdminRestController {
 
     private UserService userService;
-    private RoleService roleService;
 
     @GetMapping
     public List<User> getUsers() {
@@ -31,8 +30,9 @@ public class AdminRestController {
         userService.update(user);
     }
 
-    @DeleteMapping
-    public void delete(@RequestParam("id") long id) {
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") long id) {
+        System.out.println("ID FOR DELETE : " + id);
         userService.deleteById(id);
     }
 
@@ -41,22 +41,8 @@ public class AdminRestController {
         return userService.getById(id);
     }
 
-    private void manageRoles(User user, String roles) {
-        if (roles.contains("admin")) {
-            user.addRole(roleService.getByName("ROLE_ADMIN"));
-        }
-        if (roles.contains("user")) {
-            user.addRole(roleService.getByName("ROLE_USER"));
-        }
-    }
-
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
-    }
-
-    @Autowired
-    public void setRoleService(RoleService roleService) {
-        this.roleService = roleService;
     }
 }
