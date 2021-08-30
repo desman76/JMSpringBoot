@@ -25,13 +25,13 @@ public class AdminRestController {
     }
 
     @PatchMapping
-    public void edit(@RequestBody User user) {
+    public User edit(@RequestBody User user) {
         userService.update(user);
+        return user;
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") long id) {
-        System.out.println("ID FOR DELETE : " + id);
         userService.deleteById(id);
     }
 

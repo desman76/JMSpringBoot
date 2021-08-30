@@ -3,6 +3,7 @@ package com.mpv.jm_spring_boot.dao.impl;
 import com.mpv.jm_spring_boot.dao.BasicDao;
 import com.mpv.jm_spring_boot.entity.User;
 import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -14,18 +15,19 @@ public class UserDao implements BasicDao<User> {
     private EntityManager entityManager;
 
     @Override
-    public void add(User user) {
+    public User add(User user) {
         entityManager.persist(user);
+        return user;
     }
 
     @Override
-    public void update(User user) {
+    public User update(User user) {
         entityManager.merge(user);
+        return user;
     }
 
     @Override
     public void deleteById(long id) {
-        System.out.println("id: " + id);
         entityManager.createQuery("DELETE FROM User where id=:id")
                 .setParameter("id", id)
                 .executeUpdate();

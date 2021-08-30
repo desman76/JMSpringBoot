@@ -235,7 +235,7 @@
 <!--  --------------------------------- EDIT MODAL ------------------------------------- -->
 
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
-    <form>
+    <form id="editingForm">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -352,10 +352,11 @@
                 <div class="modal-footer">
                     <button type="button"
                             class="btn btn-secondary"
+                            id="closeEditModalBtn"
                             data-dismiss="modal">Close
                     </button>
                     <button type="submit"
-                            class="btn btn-primary" onclick="editUser()">
+                            class="btn btn-primary">
                         Edit
                     </button>
                 </div>
@@ -368,7 +369,7 @@
 <!--  --------------------------------- DELETE MODAL ------------------------------------- -->
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
-    <form>
+    <form id="deletingForm">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -462,12 +463,12 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
+                            id="closeDeleteModalBtn"
                             class="btn btn-secondary"
                             data-dismiss="modal">Close
                     </button>
                     <button type="submit"
-                            class="btn btn-danger"
-                            onclick="deleteUser()">
+                            class="btn btn-danger">
                         Delete
                     </button>
                 </div>
@@ -475,7 +476,6 @@
         </div>
     </form>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -487,43 +487,47 @@
         crossorigin="anonymous"></script>
 
 <script>
+    let users = [];
+
     document.addEventListener("DOMContentLoaded", function () {
         getUsers();
     })
 
     function getUsers() {
-        fetch("http://localhost:8080/api")
+        fetch('/api')
             .then(response => response.json())
-            .then(result => {
-                if (result.length > 0) {
-                    let body = "";
-                    result.forEach(user => {
-                        body += "<tr>"
-                        body += "<td>" + user.id + "</td>"
-                        body += "<td>" + user.firstName + "</td>"
-                        body += "<td>" + user.lastName + "</td>"
-                        body += "<td>" + user.age + "</td>"
-                        body += "<td>" + user.email + "</td>"
-                        body += "<td>"
-                        user.roles.forEach((role) => {
-                            body += `<div>${role.role.replace('ROLE_', '')}</div>`
-                        })
-                        body += "</td>"
-                        body += "<td>" +
-                            `<button type="button" class="btn btn-info" data-toggle="modal" data-target="#editModal" onclick='fillEditModal(${user.id})'>
-                             Edit </button>` + "</td>"
-                        body += "<td>" +
-                            `<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick='fillDeleteModal(${user.id})'>
-                             Delete </button>` + "</td>"
-                        body += "</tr>"
-                    })
-                    document.querySelector("#usersTable").innerHTML = body;
-                }
+            .then(result => result.forEach(user => users.push(user)))
+            .then(function () {
+                fillUsers();
             })
-
     }
 
-    document.querySelector("#addingForm").onsubmit = async (e) => {
+    function fillUsers() {
+        let body = "";
+        users.forEach(user => {
+            body += "<tr>"
+            body += "<td>" + user.id + "</td>"
+            body += "<td>" + user.firstName + "</td>"
+            body += "<td>" + user.lastName + "</td>"
+            body += "<td>" + user.age + "</td>"
+            body += "<td>" + user.email + "</td>"
+            body += "<td>"
+            user.roles.forEach((role) => {
+                body += `<div>${role.role.replace('ROLE_', '')}</div>`
+            })
+            body += "</td>"
+            body += "<td>" +
+                `<button type="button" class="btn btn-info" data-toggle="modal" data-target="#editModal" onclick='fillEditModal(${user.id})'>
+                         Edit </button>` + "</td>"
+            body += "<td>" +
+                `<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick='fillDeleteModal(${user.id})'>
+                         Delete </button>` + "</td>"
+            body += "</tr>"
+        })
+        document.querySelector("#usersTable").innerHTML = body;
+    }
+
+    document.querySelector("#addingForm").onsubmit = (e) => {
         e.preventDefault();
 
         let fName = document.querySelector('#firstNameAdd').value
@@ -536,12 +540,12 @@
 
         for (let i = 0; i < selectedRoles.options.length; i++) {
             if (selectedRoles.options[i].selected) {
-                console.log(selectedRoles.options[i].value)
+                console.log('selected roles: ' + selectedRoles.options[i].value)
                 roles.push(selectedRoles.options[i].value)
             }
         }
 
-        let response = await fetch('/api', {
+        fetch('/api', {
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -555,10 +559,13 @@
                 "password": pass,
                 "roles": roles
             })
-        });
-
-        getUsers()
-        $('#home-tab').trigger('click')
+        })
+            .then(resp => resp.json())
+            .then(res => users.push(res))
+            .then(function () {
+                fillUsers()
+                $('#home-tab').trigger('click')
+            })
     };
 
     function fillEditModal(id) {
@@ -568,7 +575,7 @@
                 "Content-Type": "application/json; charset=UTF-8",
             }
         })
-        .then(response => response.json())
+            .then(response => response.json())
             .then(result => {
                 $('#idEdit').val(result.id)
                 $('#firstNameEdit').val(result.firstName)
@@ -576,10 +583,13 @@
                 $('#ageEdit').val(result.age)
                 $('#emailEdit').val(result.email)
                 $('#passwordEdit').val(result.password)
+                console.log('result of fetch by id', result)
             })
     }
 
-    function editUser() {
+    document.querySelector("#editingForm").onsubmit = (e) => {
+        e.preventDefault()
+
         let id = document.querySelector('#idEdit').value
         let fName = document.querySelector('#firstNameEdit').value
         let lName = document.querySelector('#lastNameEdit').value
@@ -609,9 +619,23 @@
                 "password": pass,
                 "roles": roles
             })
-        });
-        getUsers()
-        $('#editModal').close
+        })
+            .then(response => response.json())
+            .then(user => {
+                console.log('updated user from response: ', user)
+                users.forEach(u => {
+                    if (u.id === user.id) {
+                        u.firstName = user.firstName
+                        u.lastName = user.lastName
+                        u.age = user.age
+                        u.email = user.email
+                        u.password = user.password
+                        u.roles = user.roles
+                    }
+                })
+                fillUsers()
+                $('#closeEditModalBtn').trigger('click')
+            })
     }
 
     function fillDeleteModal(id) {
@@ -632,7 +656,9 @@
             })
     }
 
-    function deleteUser() {
+    document.querySelector("#deletingForm").onsubmit = (e) => {
+        e.preventDefault();
+
         let id = document.querySelector('#idDelete').value
 
         fetch('/api/' + id, {
@@ -640,9 +666,17 @@
             headers: {
                 "Content-Type": "application/json; charset=UTF-8"
             }
-        });
-        getUsers()
-        $('#deleteModal').close
+        }).then(function () {
+            let index = -1;
+            users.forEach(user => {
+                if (user.id === Number(id)) {
+                    index = users.indexOf(user)
+                }
+            })
+            users.splice(index, 1)
+            fillUsers()
+            $('#closeDeleteModalBtn').trigger('click')
+        })
     }
 </script>
 </body>

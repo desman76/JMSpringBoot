@@ -14,13 +14,14 @@ public class RoleDao implements BasicDao<Role> {
     private EntityManager entityManager;
 
     @Override
-    public void add(Role role) {
+    public Role add(Role role) {
         entityManager.persist(role);
+        return role;
     }
 
     @Override
-    public void update(Role role) {
-
+    public Role update(Role role) {
+        return role;
     }
 
     @Override
