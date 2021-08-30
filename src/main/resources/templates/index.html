@@ -498,6 +498,9 @@
             .then(response => response.json())
             .then(result => result.forEach(user => users.push(user)))
             .then(function () {
+                users.sort(function (a, b) {
+                    return a.id - b.id
+                })
                 fillUsers();
             })
     }
@@ -563,6 +566,11 @@
             .then(resp => resp.json())
             .then(res => users.push(res))
             .then(function () {
+                $('#firstNameAdd').val("")
+                $('#lastNameAdd').val("")
+                $('#ageAdd').val("")
+                $('#emailAdd').val("")
+                $('#passwordAdd').val("")
                 fillUsers()
                 $('#home-tab').trigger('click')
             })
